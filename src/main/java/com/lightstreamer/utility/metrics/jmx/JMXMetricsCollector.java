@@ -218,11 +218,7 @@ public class JMXMetricsCollector extends Collector implements JMXMetrics {
   private static final String[] DELAYED_THREAD_POOL_NAMES= {
     "TLS-SSL HANDSHAKE",
     "PUMP",
-    "EVENTS",
-    "AUTHENTICATION NOWTV_REMOTE",
-    "DATA NOWTV_REMOTE.NOWTV_ADAPTER",
-    "MSG NOWTV_REMOTE",
-    "SET NOWTV_REMOTE"
+    "EVENTS"
   };
 
   private static final List<ObjectName> DELAYED_THREAD_POOLS =
@@ -392,9 +388,12 @@ public class JMXMetricsCollector extends Collector implements JMXMetrics {
   }
 
   public static void main(String[] args) throws Exception {
-    // String host = "ls01.nowtv.lightstreamer.com";
     String host = "localhost";
-    MBeanInterfaceAdapter connection = getRemoteConnection(host, 8888, "rmi", "Cvb-lDh2-HkMvE{V");
+    int port = 8888;
+    String user = "user_changeme";
+    String pwd = "password_changeme";
+
+    MBeanInterfaceAdapter connection = getRemoteConnection(host, port, user, pwd);
 
     Resource res = connection.getProxy("com.lightstreamer:type=Resource", Resource.class);
     Map<String, Long> currClientVersions = res.getCurrClientVersions(null);
