@@ -50,7 +50,7 @@ public class MetricsExportMetadataAdapter extends LiteralBasedProvider {
         
         super.init(params, dir);
 
-        logger = LogManager.getLogger("LS_demos_Logger.MetricsExporter");
+        logger = LogManager.getLogger("export_jmx_metrics");
 
         exportMetrics(params);
         

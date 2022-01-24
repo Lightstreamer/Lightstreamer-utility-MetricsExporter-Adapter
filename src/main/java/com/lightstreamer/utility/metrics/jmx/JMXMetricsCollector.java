@@ -123,7 +123,7 @@ class MBeanInterfaceAdapter implements MBeanConnection {
 
   private final MBeanServerConnection connection;
 
-  Logger log = LogManager.getLogger("metrics_jmx");
+  Logger log = LogManager.getLogger("export_jmx_metrics");
 
   public MBeanInterfaceAdapter(MBeanServerConnection connection) {
     this.connection = connection;
@@ -212,7 +212,7 @@ public class JMXMetricsCollector extends Collector implements JMXMetrics {
 
   public static final String NAME_SPACE = "lightstreamer";
 
-  final Logger log = LogManager.getLogger("NowtvAdapter.exports");
+  final Logger log = LogManager.getLogger("export_jmx_metrics");
 
   //@formatter:off
   private static final String[] DELAYED_THREAD_POOL_NAMES= {

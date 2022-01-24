@@ -30,12 +30,6 @@ public class NTDDataAdapter implements DataProvider {
         return false;
     }
 
-    // never used in the demo, just showing the feature
-    public void clearStatus() {
-        // ...
-        return ;
-    }
-
     @Override
     public void init(Map params, File configDir) throws DataProviderException {
         // ...

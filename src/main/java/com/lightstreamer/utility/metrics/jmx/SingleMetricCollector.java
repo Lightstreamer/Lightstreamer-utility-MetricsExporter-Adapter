@@ -22,7 +22,7 @@ import io.prometheus.client.Gauge;
 
 class SingleMetricCollector {
 
-  private final static Logger log = LogManager.getLogger("metrics_jmx");
+  private final static Logger log = LogManager.getLogger("export_jmx_metrics");
 
   /**
    * 
