@@ -1,3 +1,16 @@
+/*
+ *  Copyright (c) Lightstreamer Srl
+ *  
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package com.lightstreamer.utility.metrics.jmx;
 
 import static java.util.function.Predicate.not;
@@ -288,25 +301,9 @@ public class JMXMetricsCollector extends Collector implements JMXMetrics {
 
         fut = checkRegisterDelayedThreadPoolIfAny.scheduleAtFixedRate(() -> {
         try {
-          // log.info("New re-check of DelayedThreadPoolIfAny");
-          // testRegisterDelayedThreadPool();
           log.debug("Starting metrics exporter initialization...");
+          
           try {
-
-            // servers/0/com.lightstreamer/Server/type%3DServer/attributes/Status/
-            /*
-            Hashtable<String, String> props2 = new Hashtable<String, String>();
-            props2.put("type","Server");
-            ObjectName on3 = new ObjectName("com.lightstreamer", props2);
-            MBeanInfo mBeanInfo = serverConnection.getMBeanInfo(on3);
-
-            log.debug("Server MBean: ", mBeanInfo);
-
-            Arrays.asList(mBeanInfo.getAttributes())
-              .stream()
-              .peek(m -> {
-                log.debug("Collected attribute: {}.{}", on3, m.getName());
-            });*/
 
             Server serv = serverConnection.getProxy("com.lightstreamer:type=Server", Server.class);
 
