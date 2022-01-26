@@ -1,17 +1,17 @@
 # Lightstreamer Metrics Exporter Adapter Set - Prometheus Integration
 
 This project includes the source code of the Lightstreamer Metrics Exporter Adapter Set.
-A ready made Adapter Set for fast deployment into Lightstreamer server an immediate export of numerous metrics for Prometheus monitoring solution out of the box.
+A ready made Adapter Set for fast deployment into Lightstreamer server an immediate export of numerous metrics for [Prometheus monitoring solution](https://prometheus.io/) out of the box.
 
 This code is designed for Java 8 and greater.
 
 ### The Adapter Architecture
 
-This metrics exporter is intended to be run as a Lightsteamer in-proces adapter, exposing an HTTP server and serving metrics of the local JVM.
+This metrics exporter is intended to be run as a Lightsteamer in-process adapter, exposing an HTTP server and serving metrics of the local JVM.
 
 ![architecture](metrics_exporter_schema.png)
 
-The code leverages the Prometheus Java Client and include the instrumentation logic into a Metadata Adapter class.
+The code leverages the [Prometheus Java Client](https://github.com/prometheus/client_java) and include the instrumentation logic into a Metadata Adapter class.
 A custom collector is implemented to proxy metrics coming from MBeans with a one-to-one mapping between MBean attribute and Prometheus metric.
 The format of a metric is something like:
 
