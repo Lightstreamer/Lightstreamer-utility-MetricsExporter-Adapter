@@ -38,13 +38,13 @@ Currently the filtering criteria are hard-coded in the enum MBeanFilter, but it 
 
 ## Install
 
-To install the *Lightstreamer Metrics Exporter Adapter Set* in your local Lightstreamer Server: get the `deploy.zip` file of the [latest release](), unzip it, and copy the `metrics_exporter` folder into the `adapters` folder of your Lightstreamer Server installation.
+To install the *Lightstreamer Metrics Exporter Adapter Set* in your local Lightstreamer Server: get the `deploy.zip` file of the [latest release](https://github.com/Lightstreamer/Lightstreamer-utility-MetricsExporter-Adapter/releases), unzip it, and copy the `metrics_exporter` folder into the `adapters` folder of your Lightstreamer Server installation.
 A Lightstreamer Server reboot is needed.
 
 
 ## Build
 
-To build your own version of `lightstreamer-utility-metricsexporter-adapter-0.1.0` instead of using the one provided in the `deploy.zip` file from the [Install]() section above, you have two options:
+To build your own version of `lightstreamer-utility-metricsexporter-adapter-0.1.0` instead of using the one provided in the `deploy.zip` file from the [Install](https://github.com/Lightstreamer/Lightstreamer-utility-MetricsExporter-Adapter#install) section above, you have two options:
 either use [Maven](https://maven.apache.org/) (or other build tools) to take care of dependencies and building (recommended) or gather the necessary jars yourself and build it manually.
 For the sake of simplicity only the Maven case is detailed here.
 
