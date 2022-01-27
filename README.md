@@ -7,7 +7,7 @@ This code is designed for Java 8 and greater.
 
 ### The Adapter Architecture
 
-This metrics exporter is intended to be run as a Lightsteamer in-process adapter, exposing an HTTP server and serving metrics of the local JVM.
+This metrics exporter is intended to be run as a Lightsteamer in-process adapter, exposing Prometheus metrics using a plain Java HttpServer and serving metrics of the local JVM.
 
 ![architecture](metrics_exporter_schema.png)
 
@@ -34,7 +34,7 @@ Metrics will be accessible at `http://localhost:<metrics_port>/` or `http://<hos
 in the `adapters.xml` file.
 
 Only a subset of [all attributes available from JMX](https://sdk.lightstreamer.com/ls-jmx-sdk/5.6.0/api/index.html) are considered for export.
-Currently the filtering criteria are hard-coded in the [enum MBeanFilter](https://github.com/Lightstreamer/Lightstreamer-utility-MetricsExporter-Adapter/blob/master/src/main/java/com/lightstreamer/utility/metrics/jmx/JMXMetricsCollector.java#L66), but it is planned to implement the possibility of configure these criteria through the 'adapters.xml' configuration file.
+Currently the filtering criteria are hard-coded in the [enum MBeanFilter](https://github.com/Lightstreamer/Lightstreamer-utility-MetricsExporter-Adapter/blob/master/src/main/java/com/lightstreamer/utility/metrics/jmx/JMXMetricsCollector.java#L66), but it is planned to implement the possibility of configuring these criteria through the 'adapters.xml' configuration file.
 
 ## Install
 
