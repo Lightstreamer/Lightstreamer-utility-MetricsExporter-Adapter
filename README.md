@@ -12,7 +12,7 @@ This metrics exporter is intended to be run as a Lightsteamer in-process adapter
 ![architecture](metrics_exporter_schema.png)
 
 The code leverages the [Prometheus Java Client](https://github.com/prometheus/client_java) and include the instrumentation logic into a Metadata Adapter class.
-A custom collector is implemented to proxy metrics coming from MBeans with a one-to-one mapping between MBean attribute and Prometheus metric.
+A custom collector is implemented to proxy metrics coming from local MBeans with a one-to-one mapping between MBean attribute and Prometheus metric.
 The format of a metric is something like:
 
 	<server_name>_<bean_name>_<attribute_name>{beanpropertyName1="beanPropertyValue1", ...}: value
@@ -65,3 +65,7 @@ The issue list of this page is **exclusively** for bug reports and feature reque
 ## License
 
 [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
+
+## Lightstreamer Compatibility Notes
+
+* Ensure that JMX Management API is supported by your Lightstreamer Server license configuration.
