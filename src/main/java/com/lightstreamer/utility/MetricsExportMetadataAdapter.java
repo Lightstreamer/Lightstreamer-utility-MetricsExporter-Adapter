@@ -33,7 +33,7 @@ public class MetricsExportMetadataAdapter extends LiteralBasedProvider {
     }
     
      /**
-     * Private logger; a specific "LS_demos_Logger.MetricsExporter" category
+     * Private logger; a specific "export_jmx_metrics" category
      * should be supplied by log4j configuration.
      */
     private Logger logger;
