@@ -1,7 +1,7 @@
 # Lightstreamer Metrics Exporter Adapter Set - Prometheus Integration
 
 This project includes the source code of the Lightstreamer Metrics Exporter Adapter Set.
-A ready made Adapter Set for fast deployment into Lightstreamer server an immediate export of numerous metrics for [Prometheus monitoring solution](https://prometheus.io/) out of the box.
+A ready made Adapter Set for fast deployment into Lightstreamer server and immediate export of numerous metrics for [Prometheus monitoring solution](https://prometheus.io/) out of the box.
 
 This code is designed for Java 8 and greater.
 
@@ -11,7 +11,7 @@ This metrics exporter is intended to be run as a Lightsteamer in-process adapter
 
 ![architecture](metrics_exporter_schema.png)
 
-The code leverages the [Prometheus Java Client](https://github.com/prometheus/client_java) and include the instrumentation logic into a Metadata Adapter class.
+The code leverages the [Prometheus Java Client](https://github.com/prometheus/client_java) and includes the instrumentation logic into a Metadata Adapter class.
 A custom collector is implemented to proxy metrics coming from local MBeans with a one-to-one mapping between MBean attribute and Prometheus metric.
 The format of a metric is something like:
 
@@ -30,7 +30,7 @@ examples:
 
 ### Configuration
 
-Metrics will be accessible at `http://localhost:<metrics_port>/` or `http://<hostname>:<metrics_port>/` where <hostname> is the hostanme of the machine and <metrics_port> is a configuration parameter 
+Metrics will be accessible at `http://localhost:<metrics_port>/` or `http://<hostname>:<metrics_port>/` where `<hostname>` is the hostanme of the machine and `<metrics_port>` is a configuration parameter 
 in the `adapters.xml` file.
 
 Only a subset of [all attributes available from JMX](https://sdk.lightstreamer.com/ls-jmx-sdk/5.6.0/api/index.html) are considered for export.
