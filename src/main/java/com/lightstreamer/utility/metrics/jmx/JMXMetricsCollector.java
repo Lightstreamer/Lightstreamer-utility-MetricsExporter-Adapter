@@ -36,6 +36,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
+import javax.management.AttributeNotFoundException;
 import javax.management.JMX;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanInfo;
@@ -330,7 +331,12 @@ public class JMXMetricsCollector extends Collector implements JMXMetrics {
               log.info("Initialized metrics exporter");
             }     
           } catch (Exception e) {
-            log.warn("Error while querying mbeans", e);
+            if ( AttributeNotFoundException.class.isInstance(e.getCause()) ) {
+              log.error("Metrics collector failed to start, your Lightstreamer license does not support the full JMX interface feature; or it is disabled through configuration.");
+              log.debug(" - ", e);
+            } else {
+              log.warn("Error while querying mbeans", e);
+            }
           }
         } catch (Exception e) {
           log.warn("Error while re-checking DelayedThreadPoolIfAny", e);
