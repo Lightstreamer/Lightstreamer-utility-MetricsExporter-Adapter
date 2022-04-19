@@ -62,6 +62,10 @@ Assuming Maven is installed and available in your path you can build the demo by
 For questions and support please use the [Official Forum](https://forums.lightstreamer.com/).
 The issue list of this page is **exclusively** for bug reports and feature requests.
 
+## External Links
+
+- [Lightstreamer Monitoring - Integration with Prometheus and Grafana](https://blog.lightstreamer.com/2022/03/lightstreamer-monitoring-integration.html)
+
 ## License
 
 [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
