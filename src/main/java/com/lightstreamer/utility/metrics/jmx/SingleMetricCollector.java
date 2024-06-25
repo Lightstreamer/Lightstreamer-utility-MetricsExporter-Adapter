@@ -99,6 +99,8 @@ class SingleMetricCollector {
       String name = attributeInfo.getName();
       String type = objectName.getKeyProperty("type");
 
+      log.debug("..." + attributeInfo.getDescription());
+
       gauges.addGauge(objectName, name, key -> {
         log.debug("Created gauge for attribute [labelNames:{}, name:{}, type:{}], total <{}>",
             labelNames, name, type, gauges.size());

@@ -19,9 +19,11 @@ import java.io.IOException;
 import java.rmi.server.RMISocketFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -55,6 +57,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.prometheus.client.Collector;
+import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.Gauge;
 import io.prometheus.client.hotspot.DefaultExports;
 
@@ -362,6 +365,8 @@ public class JMXMetricsCollector extends Collector implements JMXMetrics {
     try {
       log.debug("Collecting metrics from JMX...");
 
+      // CollectorRegistry.defaultRegistry.clear();
+
       registerDelayedThreadPoolIfAny();
 
       List<MetricFamilySamples> allSamples = new ArrayList<Collector.MetricFamilySamples>();
@@ -376,7 +381,28 @@ public class JMXMetricsCollector extends Collector implements JMXMetrics {
 
       allSamples.addAll(clientTypeCollector.collect());
 
-      return Collections.unmodifiableList(allSamples);
+      // Iterate through the list and print each element
+      for (MetricFamilySamples sample : allSamples) {
+        log.trace("Output for the collect - pre - : " + sample.name + ", " + sample.type + ".");
+      }
+
+      // Create a LinkedHashMap to store unique MetricFamilySamples by name
+      Map<String, MetricFamilySamples> uniqueSamplesMap = new LinkedHashMap<>();
+
+      // Iterate through the list and add elements to the map
+      for (MetricFamilySamples sample : allSamples) {
+        uniqueSamplesMap.put(sample.name, sample);
+      }
+
+      // Convert the values of the map back to a list
+      List<MetricFamilySamples> allSamplesFinal = uniqueSamplesMap.values().stream().collect(Collectors.toList());
+
+      // Iterate through the list and print each element
+      for (MetricFamilySamples sample : allSamplesFinal) {
+        log.trace("Output for the collect - post - : " + sample.name + ", " + sample.type + ".");
+      }
+
+      return Collections.unmodifiableList(allSamplesFinal);
     } catch (Exception e) {
       log.warn("", e);
       return Collections.emptyList();
