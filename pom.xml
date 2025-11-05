@@ -6,7 +6,7 @@
 
   <groupId>com.lightstreamer</groupId>
   <artifactId>lightstreamer-utility-metricsexporter-adapter</artifactId>
-  <version>0.2.0</version>
+  <version>0.3.0</version>
 
   <name>lightstreamer-utility-metricsexporter-adapter</name>
   <!-- FIXME change it to the project's website -->

@@ -124,6 +124,18 @@ class SingleMetricCollector {
 
   private Stream<MetricFamilySamples> streamFromAttribute(String attributeName) {
     Object attributeValue = serverConnection.getAttributeValue(objectName, attributeName);
+    log.debug("Got value for attribute [{}]: {}", attributeName, attributeValue);
+
+    // if value is null, return empty stream and remove attribute name form attributes list
+    if (attributeValue == null) {
+      log.debug("Attribute [{}] has null value, skipping it", attributeName);
+
+      // attributesList.removeIf(attr -> attr.getName()
+      //   .equals(attributeName));
+
+      return Stream.empty();
+    } 
+
     return Optional.ofNullable(attributeValue)
       .stream()
       .flatMap(value -> collect(value, attributeName));

@@ -82,6 +82,7 @@ enum MBeanFilter {
       final List<String> types = Arrays.asList(
           "Resource",
           "Load",
+          "Session",
           "Server",
           "Stream",
           "AdapterSet",
@@ -209,17 +210,59 @@ public class JMXMetricsCollector extends Collector implements JMXMetrics {
     private final Map<String, Gauge> gaugesMap = new HashMap<>();
 
     private String toKey(ObjectName objectName, String attributeName) {
+      // For all MBean types, use type + attribute as the base key
+      // The uniqueness for different instances (like different Sessions) 
+      // is handled by Prometheus labels, not by the gauge name
       return objectName.getKeyProperty("type") + "_" + attributeName;
     }
 
     void addGauge(ObjectName objectName, String attributeName,
         Function<? super String, ? extends Gauge> gaugeFunc) {
 
-      gaugesMap.computeIfAbsent(toKey(objectName, attributeName), gaugeFunc);
+      String key = toKey(objectName, attributeName);
+      
+      // Add debug logging for Session MBeans
+      if ("Session".equals(objectName.getKeyProperty("type"))) {
+        // This will be logged from outside the static class, so we need to pass the logger
+        // For now, let's just ensure the key is unique by printing to system out if needed
+        // System.out.println("DEBUG: Adding gauge with key: " + key + " for ObjectName: " + objectName);
+      }
+      
+      gaugesMap.computeIfAbsent(key, gaugeFunc);
     }
 
     Gauge getGauge(ObjectName objectName, String attributeName) {
       return gaugesMap.get(toKey(objectName, attributeName));
+    }
+
+    void removeGaugesForMBean(ObjectName objectName) {
+      // For Session MBeans, we need to clear the specific label values
+      // associated with the terminated session from all gauges
+      if ("Session".equals(objectName.getKeyProperty("type"))) {
+        
+        // Get the label values for this ObjectName (same logic as SingleMetricCollector)
+        String[] labelValues = objectName.getKeyPropertyList()
+          .entrySet()
+          .stream()
+          .sorted((a, b) -> a.getKey().compareTo(b.getKey()))
+          .filter(e -> !e.getKey().equals("type"))
+          .map(Map.Entry::getValue)
+          .toArray(String[]::new);
+        
+        // Clear all Session gauges with these specific label values
+        String typePrefix = objectName.getKeyProperty("type") + "_";
+        gaugesMap.entrySet().stream()
+          .filter(entry -> entry.getKey().startsWith(typePrefix))
+          .forEach(entry -> {
+            try {
+              Gauge gauge = entry.getValue();
+              // Remove the specific label combination for this terminated session
+              gauge.remove(labelValues);
+            } catch (Exception e) {
+              // Ignore errors if the label combination doesn't exist
+            }
+          });
+      }
     }
 
     int size() {
@@ -360,6 +403,81 @@ public class JMXMetricsCollector extends Collector implements JMXMetrics {
     //@formatter:on
   }
 
+  private void updateSessionMBeans() {
+    try {
+      log.debug("Updating Session MBeans dynamically...");
+      
+      // Query all current Session MBeans from the server
+      List<ObjectName> currentSessionMBeans = serverConnection.queryMBeans(null)
+        .map(ObjectInstance::getObjectName)
+        .filter(objectName -> "Session".equals(objectName.getKeyProperty("type")))
+        .collect(Collectors.toList());
+
+      // debug log oj object names
+      log.debug("Current Session MBeans from server: {}", 
+                currentSessionMBeans.stream()
+                  .map(on -> on.toString() + " [properties: " + on.getKeyPropertyListString() + "]")
+                  .collect(Collectors.joining("; ")));
+      
+      // Find existing Session MBeans in collectorsMap
+      List<ObjectName> existingSessionMBeans = collectorsMap.keySet().stream()
+        .filter(objectName -> "Session".equals(objectName.getKeyProperty("type")))
+        .collect(Collectors.toList());
+
+      // debug log oj object names
+      log.debug("Existing Session MBeans in collectorsMap: {}", 
+                existingSessionMBeans.stream()
+                  .map(ObjectName::toString)
+                  .collect(Collectors.joining(", ")));
+      
+      // Find new Session MBeans to add
+      List<ObjectName> newSessionMBeans = currentSessionMBeans.stream()
+        .filter(objectName -> !existingSessionMBeans.contains(objectName))
+        .collect(Collectors.toList());
+      
+      // Find Session MBeans to remove (no longer exist)
+      List<ObjectName> sessionMBeansToRemove = existingSessionMBeans.stream()
+        .filter(objectName -> !currentSessionMBeans.contains(objectName))
+        .collect(Collectors.toList());
+      
+      // Add new Session MBeans
+      for (ObjectName newSessionMBean : newSessionMBeans) {
+        log.debug("Adding new Session MBean: {}", newSessionMBean);
+        log.debug("Session MBean canonical name: {}", newSessionMBean.getCanonicalName());
+        log.debug("Session MBean key properties: {}", newSessionMBean.getKeyPropertyListString());
+        
+        // Log all properties of the ObjectName to understand its structure
+        for (String key : newSessionMBean.getKeyPropertyList().keySet()) {
+          log.debug("Property '{}' = '{}'", key, newSessionMBean.getKeyProperty(key));
+        }
+        
+        collectorsMap.put(newSessionMBean, new SingleMetricCollector(serverConnection, newSessionMBean, gauges));
+      }
+      
+      // Remove terminated Session MBeans
+      for (ObjectName sessionMBeanToRemove : sessionMBeansToRemove) {
+        log.debug("Removing terminated Session MBean: {}", sessionMBeanToRemove);
+        
+        // Remove the collector from the map
+        collectorsMap.remove(sessionMBeanToRemove);
+        
+        // Explicitly remove the gauge samples for this session's labels
+        gauges.removeGaugesForMBean(sessionMBeanToRemove);
+        
+        log.debug("Cleaned up gauges for terminated Session: {}", sessionMBeanToRemove);
+      }
+      
+      if (!newSessionMBeans.isEmpty() || !sessionMBeansToRemove.isEmpty()) {
+        log.info("Updated Session MBeans: added {}, removed {}", 
+                 newSessionMBeans.size(), sessionMBeansToRemove.size());
+      }
+      
+    } catch (Exception e) {
+      log.warn("Error updating Session MBeans: {}", e.getMessage());
+      log.debug("Full stack trace:", e);
+    }
+  }
+
   @Override
   public final List<MetricFamilySamples> collect() {
     try {
@@ -368,6 +486,9 @@ public class JMXMetricsCollector extends Collector implements JMXMetrics {
       // CollectorRegistry.defaultRegistry.clear();
 
       registerDelayedThreadPoolIfAny();
+      
+      // Update Session MBeans dynamically
+      updateSessionMBeans();
 
       List<MetricFamilySamples> allSamples = new ArrayList<Collector.MetricFamilySamples>();
 
