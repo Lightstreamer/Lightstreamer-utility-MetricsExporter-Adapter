@@ -36,6 +36,8 @@ in the `adapters.xml` file.
 Only a subset of [all attributes available from JMX](https://sdk.lightstreamer.com/ls-jmx-sdk/5.6.0/api/index.html) are considered for export.
 Currently the filtering criteria are hard-coded in the [enum MBeanFilter](https://github.com/Lightstreamer/Lightstreamer-utility-MetricsExporter-Adapter/blob/master/src/main/java/com/lightstreamer/utility/metrics/jmx/JMXMetricsCollector.java#L66), but it is planned to implement the possibility of configuring these criteria through the 'adapters.xml' configuration file.
 
+**Note on Session MBeans**: This adapter also exports Session MBeans which provide detailed metrics for individual client sessions. However, Session MBeans are **disabled by default** in Lightstreamer Server due to resource consumption concerns when dealing with a very high number of sessions. To enable Session MBeans, you must explicitly set the `<disable_session_mbeans>` parameter to `N` in the Lightstreamer Server configuration (`lightstreamer_conf.xml`).
+
 ## Install
 
 To install the *Lightstreamer Metrics Exporter Adapter Set* in your local Lightstreamer Server: get the `deploy.zip` file of the [latest release](https://github.com/Lightstreamer/Lightstreamer-utility-MetricsExporter-Adapter/releases), unzip it, and copy the `metrics_exporter` folder into the `adapters` folder of your Lightstreamer Server installation.
