@@ -46,7 +46,7 @@ A Lightstreamer Server reboot is needed.
 
 ## Build
 
-To build your own version of `lightstreamer-utility-metricsexporter-adapter-0.1.0` instead of using the one provided in the `deploy.zip` file from the [Install](https://github.com/Lightstreamer/Lightstreamer-utility-MetricsExporter-Adapter#install) section above, you have two options:
+To build your own version of `lightstreamer-utility-metricsexporter-adapter-x.y.z` instead of using the one provided in the `deploy.zip` file from the [Install](https://github.com/Lightstreamer/Lightstreamer-utility-MetricsExporter-Adapter#install) section above, you have two options:
 either use [Maven](https://maven.apache.org/) (or other build tools) to take care of dependencies and building (recommended) or gather the necessary jars yourself and build it manually.
 For the sake of simplicity only the Maven case is detailed here.
 
