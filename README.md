@@ -3,9 +3,11 @@
 This project includes the source code of the Lightstreamer Metrics Exporter Adapter Set.
 A ready made Adapter Set for fast deployment into Lightstreamer server and immediate export of numerous metrics for [Prometheus monitoring solution](https://prometheus.io/) out of the box.
 
-This code is designed for Java 8 and greater.
+This code is designed for Java 17 and greater.
 
 ### The Adapter Architecture
+
+Note that this Adapter Set is a fake one: it does not serve any real client subscription. Its only purpose is to host code that needs to be run at server startup.
 
 This metrics exporter is intended to be run as a Lightsteamer in-process adapter, exposing Prometheus metrics using a plain Java HttpServer and serving metrics of the local JVM.
 
@@ -73,5 +75,8 @@ The issue list of this page is **exclusively** for bug reports and feature reque
 [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
 ## Lightstreamer Compatibility Notes
+
+- Compatible with Lightstreamer SDK for Java In-Process Adapters since version 9.0.
+- For a version of this example compatible with Lightstreamer SDK for Java In-Process Adapters versions 8.x, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-utility-MetricsExporter-Adapter/tree/XXXXXXXXXXXXXXXXXXXXX).
 
 * Ensure that JMX Management API is supported by your Lightstreamer Server license configuration.

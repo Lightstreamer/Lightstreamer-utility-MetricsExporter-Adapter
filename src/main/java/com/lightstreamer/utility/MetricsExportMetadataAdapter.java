@@ -16,8 +16,7 @@ package com.lightstreamer.utility;
 import java.io.File;
 import java.util.Map;
 
-import com.lightstreamer.adapters.metadata.LiteralBasedProvider;
-import com.lightstreamer.interfaces.metadata.MetadataProviderException;
+import com.lightstreamer.adapter.common.InitException;
 import com.lightstreamer.utility.metrics.Metrics;
 
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 
 import io.prometheus.client.exporter.HTTPServer;
 
-public class MetricsExportMetadataAdapter extends LiteralBasedProvider {
+public class MetricsExportMetadataAdapter extends RejectingMetadataAdapter {
     
     @FunctionalInterface
     private static interface CheckedRunnable {
@@ -42,24 +41,25 @@ public class MetricsExportMetadataAdapter extends LiteralBasedProvider {
 
     private static final String DEFAULT_METRICS_PORT = "7777";
 
-    @SuppressWarnings("unchecked")
-    private void exportMetrics(@SuppressWarnings("rawtypes") Map params)
-        throws MetadataProviderException {
+    private HTTPServer httpServer;
+
+    private void exportMetrics(Map<String, String> params)
+        throws InitException {
   
-      String metricsPort = (String) params.getOrDefault(METRICS_PORT, DEFAULT_METRICS_PORT);
-      tryExecute(() -> new HTTPServer(Integer.parseInt(metricsPort)));
+      String metricsPort = params.getOrDefault(METRICS_PORT, DEFAULT_METRICS_PORT);
+      tryExecute(() -> httpServer = new HTTPServer(Integer.parseInt(metricsPort)));
     }
   
-    private void tryExecute(CheckedRunnable run) throws MetadataProviderException {
+    private void tryExecute(CheckedRunnable run) throws InitException {
         try {
           run.run();
         } catch (Throwable thr) {
-          throw new MetadataProviderException(thr.getMessage());
+          throw new InitException(thr.getMessage());
         }
       }
 
      @Override
-    public void init(Map params, File dir) throws MetadataProviderException {
+    public void init(Map<String, String> params, File dir) throws InitException {
         
         super.init(params, dir);
 
@@ -68,5 +68,12 @@ public class MetricsExportMetadataAdapter extends LiteralBasedProvider {
         exportMetrics(params);
         
         Metrics.getJMXExporter();
+    }
+
+    @Override
+    public void shutdown() {
+        if (httpServer != null) {
+            httpServer.stop();
+        }
     }
 }

@@ -15,44 +15,28 @@ package com.lightstreamer.utility;
 
 import java.io.File;
 import java.util.Map;
+import java.util.concurrent.CompletionStage;
 
-import javax.annotation.processing.Filer;
-
-import com.lightstreamer.interfaces.data.DataProvider;
-import com.lightstreamer.interfaces.data.DataProviderException;
-import com.lightstreamer.interfaces.data.ItemEventListener;
-import com.lightstreamer.interfaces.data.SubscriptionException;
+import com.lightstreamer.adapter.common.InitException;
+import com.lightstreamer.adapter.data.DataAdapter;
+import com.lightstreamer.adapter.data.ItemManager;
+import com.lightstreamer.adapter.data.SubscriptionException;
 
 
-public class NTDDataAdapter implements DataProvider {
+public class NTDDataAdapter implements DataAdapter {
 
-    private volatile ItemEventListener listener;
-
-    
-    public void subscribe(String itemName, boolean needsIterator)
+    @Override
+    public CompletionStage<ItemManager> getItemManager(String itemName)
             throws SubscriptionException {
-        throw new SubscriptionException("This Data Adapter not support any subscription");
-    }
-
-    public void unsubscribe(String itemName) {
-        // Should never happen
-        return ;
-    }
-
-    public boolean isSnapshotAvailable(String itemName) {
-        return false;
+        throw new SubscriptionException("This Data Adapter does not support any subscription");
     }
 
     @Override
-    public void init(Map params, File configDir) throws DataProviderException {
+    public void init(Map<String, String> params, File configDir) throws InitException {
         // Nothing to do
-
-        return ;
     }
 
     @Override
-    public void setListener(ItemEventListener listener) {
-        this.listener = listener;
+    public void shutdown() {
     }
-    
 }
